@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="de"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;Escape-Breakout: Prozentrechnung&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin: 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-image: url('https://images.unsplash.com/photo-1603985549233-1fd3f9dc287f?auto=format&amp;fit=crop&amp;w=1950&amp;q=80'); /* Tresorraum-Stil */</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-size: cover;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-position: center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-family: 'Segoe UI', sans-serif;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #fff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>text-align: center;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>#overlay {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: rgba(0, 0, 0, 0.75);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 30px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin: 40px auto;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-radius: 15px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>max-width: 700px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>h1 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #ffd700;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 2.5em;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin-bottom: 20px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>#task h2, #task h3 {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #9acd32;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>input[type="text"] {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 12px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>width: 60%;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-radius: 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin-top: 15px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>button {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 12px 24px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 18px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin-top: 15px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #ffd700;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #000;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-radius: 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>cursor: pointer;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>transition: 0.3s;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>button:hover {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #e6c200;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>#feedback {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #ff4d4d;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin-top: 15px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: bold;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>#progress {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin-top: 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #00ffcc;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: bold;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>#timer {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #87cefa;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: bold;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin-top: 10px;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>audio {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="overlay"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h1&gt;🔐 Escape-Breakout: Prozentrechnung&lt;/h1&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div id="game"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div id="task"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2&gt;Reproduktionsaufgaben&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p&gt;Wie viel sind 25 % von 200?&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" id="password" placeholder="Antwort eingeben"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;br&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button onclick="checkPassword()"&gt;🔓 Bestätigen&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p id="feedback"&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p id="progress"&gt;&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p id="timer"&gt;⏱️ Zeit: 0 Sekunden&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Soundeffekte --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;audio id="sound-correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b7bd4d8ce0.mp3?filename=correct-2-46134.mp3"&gt;&lt;/audio&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;audio id="sound-wrong" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_b2ac2d5637.mp3?filename=error-126627.mp3"&gt;&lt;/audio&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let currentLevel = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let secondsElapsed = 0;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const correctSound = document.getElementById("sound-correct");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const wrongSound = document.getElementById("sound-wrong");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const passwords = ["50", "60", "480", "56", "642", "350", "25", "216", "945.39", "33"];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>const tasks = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;h2&gt;Reproduktionsaufgaben&lt;/h2&gt;&lt;p&gt;Wie viel sind 25 % von 200?&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;p&gt;Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;p&gt;Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;h3&gt;🔐 Weiter zur direkten Anwendung.&lt;/h3&gt;&lt;h2&gt;Direkte Anwendung&lt;/h2&gt;&lt;p&gt;Ein Pullover kostet 80 €. Er ist um 30 % reduziert. Wie viel kostet der Pullover nach dem Rabatt?&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;p&gt;Ein Laptop kostet 600 €. Der Preis steigt um 7 %. Wie hoch ist der neue Preis?&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;p&gt;Ein Sofa kostet 500 €. Es gibt einen Rabatt von 30 %. Wie viel kostet es jetzt?&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;h3&gt;📈 Vertiefung&lt;/h3&gt;&lt;h2&gt;Prozentuale Veränderung&lt;/h2&gt;&lt;p&gt;Ein Wert steigt von 120 auf 150. Um wie viel Prozent ist er gestiegen? (ganze Zahl ohne %)&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;p&gt;Ein Produkt kostet 200 €. Es wird erst um 10 % reduziert und dann um 20 % erhöht. Was ist der Endpreis?&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;p&gt;Ein Smartphone kostet 900 €. Nach einem Rabatt von 10 % wird die Mehrwertsteuer von 19 % hinzugefügt. Wie hoch ist der Endpreis (auf zwei Stellen)?&lt;/p&gt;",</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>"&lt;h3&gt;🧠 Finale Herausforderung&lt;/h3&gt;&lt;h2&gt;Erhöhtes Niveau&lt;/h2&gt;&lt;p&gt;Eine Aktie steigt von 80 € auf 106 €. Um wie viel Prozent ist der Wert gestiegen? (ganze Zahl ohne %)&lt;/p&gt;"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function checkPassword() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>let input = document.getElementById("password").value.trim().replace("%", "");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const feedback = document.getElementById("feedback");</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>if (input === passwords[currentLevel]) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>correctSound.play();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>currentLevel++;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>if (currentLevel &lt; tasks.length) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>document.getElementById("task").innerHTML = tasks[currentLevel];</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>document.getElementById("password").value = "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>feedback.innerText = "";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>updateProgress();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>const masterCode = "PZ-8421"; // Dein geheimer Code</span></p>
+<p class="p1"><span class="s1">document.getElementById("game").innerHTML = `</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;🎉 Glückwunsch! Du hast alle Aufgaben gelöst!&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p&gt;⏱️ Deine Zeit: ${secondsElapsed} Sekunden&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p style="color:#9acd32; font-size: 1.5em; margin-top: 20px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>🔑 Dein Schlüsselcode lautet: &lt;strong&gt;${masterCode}&lt;/strong&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p&gt;Trage ihn in dein Lösungsblatt ein oder zeige ihn deiner Lehrkraft.&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>wrongSound.play();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>feedback.innerText = "❌ Falsche Antwort! Versuche es erneut.";</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function updateProgress() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById("progress").innerText = `🔐 Aufgabe ${currentLevel + 1} von ${tasks.length}`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function startTimer() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>setInterval(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>secondsElapsed++;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>document.getElementById("timer").innerText = `⏱️ Zeit: ${secondsElapsed} Sekunden`;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}, 1000);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>window.onload = function () {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>updateProgress();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>startTimer();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById("password").addEventListener("keydown", function (event) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>if (event.key === "Enter") {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>checkPassword();</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>});</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>};</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+</body>
+</html>

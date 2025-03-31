@@ -3,40 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <title>Escape-Breakout: Prozentrechnung</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 40px;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .task-box {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        #congrats {
+            text-align: center;
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: 30px auto;
+            box-shadow: 0 0 10px rgba(60, 118, 61, 0.2);
+        }
+    </style>
 </head>
 <body>
-    <h1>Escape-Breakout: Prozentrechnung</h1>
 
-    <div id="task1">
-        <h2>🔐 Aufgabe 1</h2>
+    <h1>🔐 Escape-Breakout: Prozentrechnung</h1>
+
+    <div id="task1" class="task-box">
+        <h2>Aufgabe 1</h2>
         <p>Wie viel sind 25 % von 200?</p>
         <input type="text" id="input1" placeholder="Antwort eingeben">
+        <br>
         <button onclick="checkAnswer(1)">Bestätigen</button>
-        <p id="feedback1"></p>
+        <p id="feedback1" class="feedback"></p>
     </div>
 
-    <div id="task2" style="display:none;">
-        <h2>🔐 Aufgabe 2</h2>
+    <div id="task2" class="task-box" style="display:none;">
+        <h2>Aufgabe 2</h2>
         <p>Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?</p>
         <input type="text" id="input2" placeholder="Antwort eingeben">
+        <br>
         <button onclick="checkAnswer(2)">Bestätigen</button>
-        <p id="feedback2"></p>
+        <p id="feedback2" class="feedback"></p>
     </div>
 
-    <div id="task3" style="display:none;">
-        <h2>🔐 Aufgabe 3</h2>
+    <div id="task3" class="task-box" style="display:none;">
+        <h2>Aufgabe 3</h2>
         <p>Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?</p>
         <input type="text" id="input3" placeholder="Antwort eingeben">
+        <br>
         <button onclick="checkAnswer(3)">Bestätigen</button>
-        <p id="feedback3"></p>
+        <p id="feedback3" class="feedback"></p>
     </div>
 
-    <div id="task4" style="display:none;">
-        <h2>🔐 Aufgabe 4</h2>
+    <div id="task4" class="task-box" style="display:none;">
+        <h2>Aufgabe 4</h2>
         <p>Ein Laptop kostet 600 €. Der Preis sinkt um 30 %. Wie viel kostet er jetzt?</p>
         <input type="text" id="input4" placeholder="Antwort eingeben">
+        <br>
         <button onclick="checkAnswer(4)">Bestätigen</button>
-        <p id="feedback4"></p>
+        <p id="feedback4" class="feedback"></p>
     </div>
 
     <div id="congrats" style="display:none;">

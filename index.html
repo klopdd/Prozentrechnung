@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Escape-Breakout: Prozentrechnung</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -92,6 +93,10 @@
     audio {
       display: none;
     }
+
+    #certificate {
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
@@ -102,8 +107,8 @@
         <h2>Reproduktionsaufgaben</h2>
         <p>Wie viel sind 25 % von 200?</p>
       </div>
-      <input type="text" id="password" placeholder="Antwort eingeben">
-      <br>
+      <input type="text" id="password" placeholder="Antwort eingeben" />
+      <br />
       <button onclick="checkPassword()">🔓 Bestätigen</button>
       <p id="feedback"></p>
       <p id="progress"></p>
@@ -124,12 +129,13 @@
     let errorCount = 0;
     let streak = 0;
     let medal = "-";
+    let timerInterval;
 
     const correctSound = document.getElementById("sound-correct");
     const wrongSound = document.getElementById("sound-wrong");
     const victorySound = document.getElementById("sound-victory");
 
-    const passwords = ["50", "60", "480", "56", "642", "350", "25", "216", "945.39", "33"];
+    const passwords = ["50", "60", "480", "56", "642", "350", "25", "216", "963.90", "33"];
     const tasks = [
       "<h2>Reproduktionsaufgaben</h2><p>Wie viel sind 25 % von 200?</p>",
       "<p>Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?</p>",
@@ -137,7 +143,7 @@
       "<h3>🔐 Weiter zur direkten Anwendung.</h3><h2>Direkte Anwendung</h2><p>Ein Pullover kostet 80 €. Er ist um 30 % reduziert. Wie viel kostet der Pullover nach dem Rabatt?</p>",
       "<p>Ein Laptop kostet 600 €. Der Preis steigt um 7 %. Wie hoch ist der neue Preis?</p>",
       "<p>Ein Sofa kostet 500 €. Es gibt einen Rabatt von 30 %. Wie viel kostet es jetzt?</p>",
-      "<h3>📈 Vertiefung</h3><h2>Prozentuale Veränderung</h2><p>Ein Wert steigt von 120 auf 150. Um wie viel Prozent ist er gestiegen? (ganze Zahl ohne %)</p>",
+      "<h3>📈 Vertiefung</h2><p>Ein Wert steigt von 120 auf 150. Um wie viel Prozent ist er gestiegen? (ganze Zahl ohne %)</p>",
       "<p>Ein Produkt kostet 200 €. Es wird erst um 10 % reduziert und dann um 20 % erhöht. Was ist der Endpreis?</p>",
       "<p>Ein Smartphone kostet 900 €. Nach einem Rabatt von 10 % wird die Mehrwertsteuer von 19 % hinzugefügt. Wie hoch ist der Endpreis (auf zwei Stellen)?</p>",
       "<h3>🧠 Finale Herausforderung</h3><h2>Erhöhtes Niveau</h2><p>Eine Aktie steigt von 80 € auf 106 €. Um wie viel Prozent ist der Wert gestiegen? (ganze Zahl ohne %)</p>"
@@ -158,18 +164,9 @@
           feedback.innerText = "";
           updateProgress();
         } else {
+          clearInterval(timerInterval);
           victorySound.play();
-          const masterCode = "PZ-8421";
-          document.getElementById("game").innerHTML = `
-              <h2>🎉 Glückwunsch! Du hast alle Aufgaben gelöst!</h2>
-              <p>⏱️ Deine Zeit: ${secondsElapsed} Sekunden</p>
-              <p>❌ Fehler gemacht: ${errorCount}</p>
-              <p>🏅 Erreichte Medaille: <strong>${medal}</strong></p>
-              <p style="color:#9acd32; font-size: 1.5em; margin-top: 20px;">
-                  🔑 Dein Schlüsselcode lautet: <strong>${masterCode}</strong>
-              </p>
-              <p>Trage ihn in dein Lösungsblatt ein oder zeige ihn deiner Lehrkraft.</p>
-          `;
+          showCertificate();
         }
       } else {
         wrongSound.play();
@@ -204,10 +201,41 @@
     }
 
     function startTimer() {
-      setInterval(() => {
+      timerInterval = setInterval(() => {
         secondsElapsed++;
         document.getElementById("timer").innerText = `⏱️ Zeit: ${secondsElapsed} Sekunden`;
       }, 1000);
+    }
+
+    function showCertificate() {
+      const game = document.getElementById("game");
+      game.innerHTML = `
+        <h2>🎉 Glückwunsch!</h2>
+        <p>Du hast alle Aufgaben richtig gelöst.</p>
+        <p>⏱️ Zeit: ${secondsElapsed} Sekunden</p>
+        <p>❌ Fehler: ${errorCount}</p>
+        <p>🏅 Medaille: <strong>${medal}</strong></p>
+        <p style="color:#9acd32; font-size: 1.5em; margin-top: 20px;">
+            🔑 Dein Schlüsselcode lautet: <strong>PZ-8421</strong>
+        </p>
+        <p>🎓 Klicke unten, um deine PDF-Urkunde herunterzuladen:</p>
+        <button onclick="generatePDF()">📄 Urkunde herunterladen</button>
+      `;
+    }
+
+    function generatePDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(18);
+      doc.text("Escape-Breakout: Urkunde", 20, 30);
+      doc.setFontSize(12);
+      doc.text(`Herzlichen Glückwunsch!`, 20, 50);
+      doc.text(`Du hast das Escape-Breakout zur Prozentrechnung erfolgreich abgeschlossen.`, 20, 60);
+      doc.text(`Zeit: ${secondsElapsed} Sekunden`, 20, 75);
+      doc.text(`Fehler: ${errorCount}`, 20, 85);
+      doc.text(`Medaille: ${medal}`, 20, 95);
+      doc.text(`Schlüsselcode: PZ-8421`, 20, 105);
+      doc.save("Urkunde_Escape_Breakout.pdf");
     }
 
     window.onload = function () {

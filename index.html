@@ -1,161 +1,155 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Escape-Breakout: Prozentrechnung</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            padding: 40px;
-            margin: 0;
-        }
+  <meta charset="UTF-8" />
+  <title>Escape-Breakout: Prozentrechnung</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      padding: 40px;
+      margin: 0;
+    }
 
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-        }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
 
-        .task-box {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin: 20px auto;
-            max-width: 600px;
-        }
+    .task-box {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin: 20px auto;
+      max-width: 600px;
+    }
 
-        input[type="text"] {
-            padding: 10px;
-            width: 80%;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            margin-top: 10px;
-        }
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-top: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-        button:hover {
-            background-color: #2980b9;
-        }
+    button:hover {
+      background-color: #2980b9;
+    }
 
-        .feedback {
-            margin-top: 10px;
-            font-weight: bold;
-        }
+    .feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
 
-        #congrats {
-            text-align: center;
-            background-color: #dff0d8;
-            color: #3c763d;
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 600px;
-            margin: 30px auto;
-            box-shadow: 0 0 10px rgba(60, 118, 61, 0.2);
-        }
+    #congrats {
+      text-align: center;
+      background-color: #dff0d8;
+      color: #3c763d;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: 30px auto;
+      box-shadow: 0 0 10px rgba(60, 118, 61, 0.2);
+    }
 
-        #timer {
-            text-align: center;
-            font-weight: bold;
-            color: #555;
-            margin-top: -20px;
-        }
-    </style>
+    #timer {
+      text-align: center;
+      font-weight: bold;
+      color: #555;
+      margin-top: -20px;
+    }
+  </style>
 </head>
 <body>
+  <h1>🔐 Escape-Breakout: Prozentrechnung</h1>
+  <p id="timer">⏱️ Zeit: 0 Sekunden</p>
 
-    <h1>🔐 Escape-Breakout: Prozentrechnung</h1>
-    <p id="timer">⏱️ Zeit: 0 Sekunden</p>
+  <div id="task-container" class="task-box">
+    <h2 id="task-title"></h2>
+    <p id="task-question"></p>
+    <input type="text" id="answer" placeholder="Antwort eingeben" />
+    <br />
+    <button onclick="checkAnswer()">Bestätigen</button>
+    <p id="feedback" class="feedback"></p>
+  </div>
 
-    <div id="task1" class="task-box">
-        <h2>Aufgabe 1</h2>
-        <p>Wie viel sind 25 % von 200?</p>
-        <input type="text" id="input1" placeholder="Antwort eingeben">
-        <br>
-        <button onclick="checkAnswer(1)">Bestätigen</button>
-        <p id="feedback1" class="feedback"></p>
-    </div>
+  <div id="congrats" style="display: none;">
+    <h2>🎉 Glückwunsch!</h2>
+    <p>Du hast alle Aufgaben richtig gelöst.</p>
+    <p><strong>🔑 Dein Schlüsselcode lautet: PZ-8421</strong></p>
+    <p id="endTime"></p>
+  </div>
 
-    <div id="task2" class="task-box" style="display:none;">
-        <h2>Aufgabe 2</h2>
-        <p>Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?</p>
-        <input type="text" id="input2" placeholder="Antwort eingeben">
-        <br>
-        <button onclick="checkAnswer(2)">Bestätigen</button>
-        <p id="feedback2" class="feedback"></p>
-    </div>
+  <script>
+    const tasks = [
+      { frage: "Wie viel sind 25 % von 200?", lösung: "50" },
+      { frage: "Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?", lösung: "60" },
+      { frage: "Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?", lösung: "480" },
+      { frage: "Ein Laptop kostet 600 €. Der Preis sinkt um 30 %. Wie viel kostet er jetzt?", lösung: "420" }
+    ];
 
-    <div id="task3" class="task-box" style="display:none;">
-        <h2>Aufgabe 3</h2>
-        <p>Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?</p>
-        <input type="text" id="input3" placeholder="Antwort eingeben">
-        <br>
-        <button onclick="checkAnswer(3)">Bestätigen</button>
-        <p id="feedback3" class="feedback"></p>
-    </div>
+    let currentIndex = 0;
+    let seconds = 0;
+    let timerInterval;
 
-    <div id="task4" class="task-box" style="display:none;">
-        <h2>Aufgabe 4</h2>
-        <p>Ein Laptop kostet 600 €. Der Preis sinkt um 30 %. Wie viel kostet er jetzt?</p>
-        <input type="text" id="input4" placeholder="Antwort eingeben">
-        <br>
-        <button onclick="checkAnswer(4)">Bestätigen</button>
-        <p id="feedback4" class="feedback"></p>
-    </div>
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        seconds++;
+        document.getElementById("timer").innerText = `⏱️ Zeit: ${seconds} Sekunden`;
+      }, 1000);
+    }
 
-    <div id="congrats" style="display:none;">
-        <h2>🎉 Glückwunsch!</h2>
-        <p>Du hast alle Aufgaben richtig gelöst.</p>
-        <p><strong>🔑 Dein Schlüsselcode lautet: PZ-8421</strong></p>
-        <p id="endTime"></p>
-    </div>
+    function showCurrentTask() {
+      const currentTask = tasks[currentIndex];
+      document.getElementById("task-title").innerText = `Aufgabe ${currentIndex + 1}`;
+      document.getElementById("task-question").innerText = currentTask.frage;
+      document.getElementById("answer").value = "";
+      document.getElementById("feedback").innerText = "";
+    }
 
-    <script>
-        const solutions = ["50", "60", "480", "420"];
-        let seconds = 0;
-        let timerInterval;
+    function checkAnswer() {
+      const input = document.getElementById("answer").value.trim();
+      const feedback = document.getElementById("feedback");
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                seconds++;
-                document.getElementById("timer").innerText = `⏱️ Zeit: ${seconds} Sekunden`;
-            }, 1000);
+      if (input === tasks[currentIndex].lösung) {
+        feedback.style.color = "green";
+        feedback.innerText = "✅ Richtig!";
+        currentIndex++;
+
+        if (currentIndex < tasks.length) {
+          setTimeout(() => {
+            showCurrentTask();
+          }, 500); // kurze Pause
+        } else {
+          clearInterval(timerInterval);
+          document.getElementById("task-container").style.display = "none";
+          document.getElementById("congrats").style.display = "block";
+          document.getElementById("endTime").innerText = `⏱️ Du hast ${seconds} Sekunden gebraucht.`;
         }
+      } else {
+        feedback.style.color = "red";
+        feedback.innerText = "❌ Falsche Antwort. Versuch es nochmal!";
+      }
+    }
 
-        function checkAnswer(taskNumber) {
-            const input = document.getElementById("input" + taskNumber).value.trim();
-            const feedback = document.getElementById("feedback" + taskNumber);
-            
-            if (input === solutions[taskNumber - 1]) {
-                feedback.style.color = "green";
-                feedback.innerText = "✅ Richtig!";
-                const nextTask = document.getElementById("task" + (taskNumber + 1));
-                if (nextTask) {
-                    nextTask.style.display = "block";
-                } else {
-                    clearInterval(timerInterval);
-                    document.getElementById("congrats").style.display = "block";
-                    document.getElementById("endTime").innerText = `⏱️ Du hast ${seconds} Sekunden gebraucht.`;
-                }
-            } else {
-                feedback.style.color = "red";
-                feedback.innerText = "❌ Falsche Antwort. Versuch es nochmal!";
-            }
-        }
-
-        window.onload = startTimer;
-    </script>
+    window.onload = function () {
+      startTimer();
+      showCurrentTask();
+    };
+  </script>
 </body>
 </html>

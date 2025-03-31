@@ -32,10 +32,6 @@
       margin-bottom: 20px;
     }
 
-    #task h2, #task h3 {
-      color: #9acd32;
-    }
-
     input[type="text"] {
       padding: 12px;
       font-size: 18px;
@@ -67,48 +63,51 @@
       font-weight: bold;
     }
 
-    #progress {
-      margin-top: 10px;
-      color: #00ffcc;
-      font-weight: bold;
-    }
-
-    #timer {
-      color: #87cefa;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    #stats {
+    #progress, #timer, #stats, #medals {
       margin-top: 10px;
       font-weight: bold;
-      color: #ffa07a;
     }
 
-    #medals {
+    #progress { color: #00ffcc; }
+    #timer { color: #87cefa; }
+    #stats { color: #ffa07a; }
+    #medals { font-size: 1.2em; }
+
+    #tooltip {
       margin-top: 10px;
-      font-size: 1.2em;
-    }
-
-    audio {
+      color: #ccc;
+      font-style: italic;
       display: none;
     }
 
-    #certificate {
-      margin-top: 30px;
+    audio { display: none; }
+
+    #start-form input {
+      display: block;
+      margin: 10px auto;
     }
   </style>
 </head>
 <body>
   <div id="overlay">
     <h1>🔐 Escape-Breakout: Prozentrechnung</h1>
-    <div id="game">
+
+    <div id="start-form">
+      <p>Bitte gib deinen Namen und deine Klasse ein, bevor du startest:</p>
+      <input type="text" id="userName" placeholder="Dein Name">
+      <input type="text" id="userClass" placeholder="Deine Klasse">
+      <button onclick="startGame()">🚀 Spiel starten</button>
+    </div>
+
+    <div id="game" style="display:none;">
       <div id="task">
         <h2>Reproduktionsaufgaben</h2>
-        <p>Wie viel sind 25 % von 200?</p>
+        <p id="taskText">Wie viel sind 25 % von 200?</p>
       </div>
-      <input type="text" id="password" placeholder="Antwort eingeben" />
-      <br />
+      <button onclick="toggleTooltip()">💡 Hinweis anzeigen</button>
+      <p id="tooltip"></p>
+      <input type="text" id="password" placeholder="Antwort eingeben">
+      <br>
       <button onclick="checkPassword()">🔓 Bestätigen</button>
       <p id="feedback"></p>
       <p id="progress"></p>
@@ -118,36 +117,84 @@
     </div>
   </div>
 
-  <!-- Soundeffekte -->
-  <audio id="sound-correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b7bd4d8ce0.mp3?filename=correct-2-46134.mp3"></audio>
-  <audio id="sound-wrong" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_b2ac2d5637.mp3?filename=error-126627.mp3"></audio>
-  <audio id="sound-victory" src="https://cdn.pixabay.com/download/audio/2022/10/15/audio_94d20470ba.mp3?filename=success-fanfare-trumpets-6185.mp3"></audio>
+  <!-- Sounds -->
+  <audio id="sound-correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b7bd4d8ce0.mp3"></audio>
+  <audio id="sound-wrong" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_b2ac2d5637.mp3"></audio>
+  <audio id="sound-victory" src="https://cdn.pixabay.com/download/audio/2022/10/15/audio_94d20470ba.mp3"></audio>
 
   <script>
+    const { jsPDF } = window.jspdf;
+
     let currentLevel = 0;
     let secondsElapsed = 0;
     let errorCount = 0;
     let streak = 0;
     let medal = "-";
     let timerInterval;
+    let name = "";
+    let klasse = "";
+
+    const passwords = ["50", "60", "480", "56", "642", "350", "25", "216", "963.90", "33"];
+    const tasks = [
+      "Wie viel sind 25 % von 200?",
+      "Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?",
+      "Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?",
+      "Ein Pullover kostet 80 €. Er ist um 30 % reduziert. Wie viel kostet er jetzt?",
+      "Ein Laptop kostet 600 €. Der Preis steigt um 7 %. Wie hoch ist der neue Preis?",
+      "Ein Sofa kostet 500 €. Es gibt 30 % Rabatt. Wie viel kostet es jetzt?",
+      "Ein Wert steigt von 120 auf 150. Um wie viel Prozent ist er gestiegen? (ganze Zahl ohne %)",
+      "Ein Produkt kostet 200 €. Erst 10 % Rabatt, dann 20 % Aufschlag. Was ist der Endpreis?",
+      "Ein Smartphone kostet 900 €. Nach 10 % Rabatt kommt 19 % MwSt. Wie hoch ist der Endpreis (zwei Stellen)?",
+      "Eine Aktie steigt von 80 € auf 106 €. Um wie viel Prozent ist der Wert gestiegen? (ganze Zahl ohne %)"
+    ];
+
+    const tooltips = [
+      "25 % von 200 = 0,25 × 200",
+      "50 % Rabatt = halber Preis",
+      "20 % von 400 = 80 → 400 + 80",
+      "30 % von 80 = 24 → 80 - 24",
+      "7 % von 600 = 42 → 600 + 42",
+      "30 % von 500 = 150 → 500 - 150",
+      "150 - 120 = 30 → (30/120)×100",
+      "Erst 10 % runter, dann 20 % rauf auf neuen Preis",
+      "900 - 10 % → dann ×1,19",
+      "Differenz: 26 → (26/80)×100"
+    ];
 
     const correctSound = document.getElementById("sound-correct");
     const wrongSound = document.getElementById("sound-wrong");
     const victorySound = document.getElementById("sound-victory");
 
-    const passwords = ["50", "60", "480", "56", "642", "350", "25", "216", "963.90", "33"];
-    const tasks = [
-      "<h2>Reproduktionsaufgaben</h2><p>Wie viel sind 25 % von 200?</p>",
-      "<p>Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?</p>",
-      "<p>Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?</p>",
-      "<h3>🔐 Weiter zur direkten Anwendung.</h3><h2>Direkte Anwendung</h2><p>Ein Pullover kostet 80 €. Er ist um 30 % reduziert. Wie viel kostet der Pullover nach dem Rabatt?</p>",
-      "<p>Ein Laptop kostet 600 €. Der Preis steigt um 7 %. Wie hoch ist der neue Preis?</p>",
-      "<p>Ein Sofa kostet 500 €. Es gibt einen Rabatt von 30 %. Wie viel kostet es jetzt?</p>",
-      "<h3>📈 Vertiefung</h2><p>Ein Wert steigt von 120 auf 150. Um wie viel Prozent ist er gestiegen? (ganze Zahl ohne %)</p>",
-      "<p>Ein Produkt kostet 200 €. Es wird erst um 10 % reduziert und dann um 20 % erhöht. Was ist der Endpreis?</p>",
-      "<p>Ein Smartphone kostet 900 €. Nach einem Rabatt von 10 % wird die Mehrwertsteuer von 19 % hinzugefügt. Wie hoch ist der Endpreis (auf zwei Stellen)?</p>",
-      "<h3>🧠 Finale Herausforderung</h3><h2>Erhöhtes Niveau</h2><p>Eine Aktie steigt von 80 € auf 106 €. Um wie viel Prozent ist der Wert gestiegen? (ganze Zahl ohne %)</p>"
-    ];
+    function startGame() {
+      name = document.getElementById("userName").value.trim();
+      klasse = document.getElementById("userClass").value.trim();
+      if (name === "" || klasse === "") {
+        alert("Bitte gib sowohl Name als auch Klasse ein!");
+        return;
+      }
+      document.getElementById("start-form").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      updateProgress();
+      updateStats();
+      updateMedals();
+      startTimer();
+      updateTaskText();
+    }
+
+    function updateTaskText() {
+      document.getElementById("taskText").innerText = tasks[currentLevel];
+      document.getElementById("tooltip").style.display = "none";
+    }
+
+    function toggleTooltip() {
+      const tooltip = document.getElementById("tooltip");
+      if (tooltip.style.display === "none") {
+        tooltip.innerText = tooltips[currentLevel];
+        tooltip.style.display = "block";
+      } else {
+        tooltip.style.display = "none";
+      }
+    }
 
     function checkPassword() {
       let input = document.getElementById("password").value.trim().replace("%", "");
@@ -159,7 +206,7 @@
         streak++;
         updateMedals();
         if (currentLevel < tasks.length) {
-          document.getElementById("task").innerHTML = tasks[currentLevel];
+          updateTaskText();
           document.getElementById("password").value = "";
           feedback.innerText = "";
           updateProgress();
@@ -172,7 +219,7 @@
         wrongSound.play();
         streak = 0;
         errorCount++;
-        feedback.innerText = "❌ Falsche Antwort! Versuche es erneut.";
+        feedback.innerText = "❌ Falsche Antwort! Versuch es nochmal!";
         updateStats();
         updateMedals();
       }
@@ -188,15 +235,10 @@
 
     function updateMedals() {
       const medalEl = document.getElementById("medals");
-      if (streak >= 10) {
-        medal = "🥇 Gold";
-      } else if (streak >= 5) {
-        medal = "🥈 Silber";
-      } else if (streak >= 3) {
-        medal = "🥉 Bronze";
-      } else {
-        medal = "–";
-      }
+      if (streak >= 10) medal = "🥇 Gold";
+      else if (streak >= 5) medal = "🥈 Silber";
+      else if (streak >= 3) medal = "🥉 Bronze";
+      else medal = "–";
       medalEl.innerText = `🏅 Erfolge: ${medal}`;
     }
 
@@ -208,45 +250,34 @@
     }
 
     function showCertificate() {
-      const game = document.getElementById("game");
-      game.innerHTML = `
-        <h2>🎉 Glückwunsch!</h2>
-        <p>Du hast alle Aufgaben richtig gelöst.</p>
+      document.getElementById("game").innerHTML = `
+        <h2>🎉 Glückwunsch, ${name}!</h2>
+        <p>Du hast das Escape-Breakout erfolgreich beendet.</p>
         <p>⏱️ Zeit: ${secondsElapsed} Sekunden</p>
         <p>❌ Fehler: ${errorCount}</p>
         <p>🏅 Medaille: <strong>${medal}</strong></p>
-        <p style="color:#9acd32; font-size: 1.5em; margin-top: 20px;">
-            🔑 Dein Schlüsselcode lautet: <strong>PZ-8421</strong>
-        </p>
-        <p>🎓 Klicke unten, um deine PDF-Urkunde herunterzuladen:</p>
+        <p>📘 Klasse: ${klasse}</p>
         <button onclick="generatePDF()">📄 Urkunde herunterladen</button>
       `;
     }
 
     function generatePDF() {
-      const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       doc.setFontSize(18);
       doc.text("Escape-Breakout: Urkunde", 20, 30);
       doc.setFontSize(12);
-      doc.text(`Herzlichen Glückwunsch!`, 20, 50);
-      doc.text(`Du hast das Escape-Breakout zur Prozentrechnung erfolgreich abgeschlossen.`, 20, 60);
+      doc.text(`Name: ${name}`, 20, 50);
+      doc.text(`Klasse: ${klasse}`, 20, 60);
       doc.text(`Zeit: ${secondsElapsed} Sekunden`, 20, 75);
       doc.text(`Fehler: ${errorCount}`, 20, 85);
       doc.text(`Medaille: ${medal}`, 20, 95);
-      doc.text(`Schlüsselcode: PZ-8421`, 20, 105);
-      doc.save("Urkunde_Escape_Breakout.pdf");
+      doc.text(`Schlüsselcode: PZ-8421`, 20, 110);
+      doc.save(`Urkunde_${name.replace(" ", "_")}.pdf`);
     }
 
-    window.onload = function () {
-      updateProgress();
-      updateStats();
-      updateMedals();
-      startTimer();
+    window.onload = () => {
       document.getElementById("password").addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-          checkPassword();
-        }
+        if (event.key === "Enter") checkPassword();
       });
     };
   </script>

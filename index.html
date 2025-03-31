@@ -7,11 +7,65 @@
 <body>
     <h1>Escape-Breakout: Prozentrechnung</h1>
 
-    <h2>Aufgabe</h2>
-    <p>Wie viel sind 25 % von 200?</p>
+    <div id="task1">
+        <h2>🔐 Aufgabe 1</h2>
+        <p>Wie viel sind 25 % von 200?</p>
+        <input type="text" id="input1" placeholder="Antwort eingeben">
+        <button onclick="checkAnswer(1)">Bestätigen</button>
+        <p id="feedback1"></p>
+    </div>
 
-    <p><strong>Antwort:</strong> ____________</p>
+    <div id="task2" style="display:none;">
+        <h2>🔐 Aufgabe 2</h2>
+        <p>Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?</p>
+        <input type="text" id="input2" placeholder="Antwort eingeben">
+        <button onclick="checkAnswer(2)">Bestätigen</button>
+        <p id="feedback2"></p>
+    </div>
 
-    <p>🔒 Wenn du die richtige Lösung hast, gehe zur nächsten Station!</p>
+    <div id="task3" style="display:none;">
+        <h2>🔐 Aufgabe 3</h2>
+        <p>Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?</p>
+        <input type="text" id="input3" placeholder="Antwort eingeben">
+        <button onclick="checkAnswer(3)">Bestätigen</button>
+        <p id="feedback3"></p>
+    </div>
+
+    <div id="task4" style="display:none;">
+        <h2>🔐 Aufgabe 4</h2>
+        <p>Ein Laptop kostet 600 €. Der Preis sinkt um 30 %. Wie viel kostet er jetzt?</p>
+        <input type="text" id="input4" placeholder="Antwort eingeben">
+        <button onclick="checkAnswer(4)">Bestätigen</button>
+        <p id="feedback4"></p>
+    </div>
+
+    <div id="congrats" style="display:none;">
+        <h2>🎉 Glückwunsch!</h2>
+        <p>Du hast alle Aufgaben richtig gelöst.</p>
+        <p><strong>🔑 Dein Schlüsselcode lautet: PZ-8421</strong></p>
+    </div>
+
+    <script>
+        const solutions = ["50", "60", "480", "420"]; // richtige Antworten in Reihenfolge
+
+        function checkAnswer(taskNumber) {
+            const input = document.getElementById("input" + taskNumber).value.trim();
+            const feedback = document.getElementById("feedback" + taskNumber);
+            
+            if (input === solutions[taskNumber - 1]) {
+                feedback.style.color = "green";
+                feedback.innerText = "✅ Richtig!";
+                const nextTask = document.getElementById("task" + (taskNumber + 1));
+                if (nextTask) {
+                    nextTask.style.display = "block";
+                } else {
+                    document.getElementById("congrats").style.display = "block";
+                }
+            } else {
+                feedback.style.color = "red";
+                feedback.innerText = "❌ Falsche Antwort. Versuch es nochmal!";
+            }
+        }
+    </script>
 </body>
 </html>

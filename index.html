@@ -65,11 +65,19 @@
             margin: 30px auto;
             box-shadow: 0 0 10px rgba(60, 118, 61, 0.2);
         }
+
+        #timer {
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+            margin-top: -20px;
+        }
     </style>
 </head>
 <body>
 
     <h1>🔐 Escape-Breakout: Prozentrechnung</h1>
+    <p id="timer">⏱️ Zeit: 0 Sekunden</p>
 
     <div id="task1" class="task-box">
         <h2>Aufgabe 1</h2>
@@ -111,10 +119,20 @@
         <h2>🎉 Glückwunsch!</h2>
         <p>Du hast alle Aufgaben richtig gelöst.</p>
         <p><strong>🔑 Dein Schlüsselcode lautet: PZ-8421</strong></p>
+        <p id="endTime"></p>
     </div>
 
     <script>
-        const solutions = ["50", "60", "480", "420"]; // richtige Antworten in Reihenfolge
+        const solutions = ["50", "60", "480", "420"];
+        let seconds = 0;
+        let timerInterval;
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                seconds++;
+                document.getElementById("timer").innerText = `⏱️ Zeit: ${seconds} Sekunden`;
+            }, 1000);
+        }
 
         function checkAnswer(taskNumber) {
             const input = document.getElementById("input" + taskNumber).value.trim();
@@ -127,13 +145,17 @@
                 if (nextTask) {
                     nextTask.style.display = "block";
                 } else {
+                    clearInterval(timerInterval);
                     document.getElementById("congrats").style.display = "block";
+                    document.getElementById("endTime").innerText = `⏱️ Du hast ${seconds} Sekunden gebraucht.`;
                 }
             } else {
                 feedback.style.color = "red";
                 feedback.innerText = "❌ Falsche Antwort. Versuch es nochmal!";
             }
         }
+
+        window.onload = startTimer;
     </script>
 </body>
 </html>

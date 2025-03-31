@@ -1,178 +1,226 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Escape-Breakout: Prozentrechnung</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-image: url('https://images.unsplash.com/photo-1603985549233-1fd3f9dc287f?auto=format&fit=crop&w=1950&q=80'); /* Tresorraum-Stil */
-            background-size: cover;
-            background-position: center;
-            font-family: 'Segoe UI', sans-serif;
-            color: #fff;
-            text-align: center;
-        }
+  <meta charset="UTF-8">
+  <title>Escape-Breakout: Prozentrechnung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-image: url('https://images.unsplash.com/photo-1603985549233-1fd3f9dc287f?auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      text-align: center;
+    }
 
-        #overlay {
-            background-color: rgba(0, 0, 0, 0.75);
-            padding: 30px;
-            margin: 40px auto;
-            border-radius: 15px;
-            max-width: 700px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-        }
+    #overlay {
+      background-color: rgba(0, 0, 0, 0.75);
+      padding: 30px;
+      margin: 40px auto;
+      border-radius: 15px;
+      max-width: 700px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
 
-        h1 {
-            color: #ffd700;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
+    h1 {
+      color: #ffd700;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
 
-        #task h2, #task h3 {
-            color: #9acd32;
-        }
+    #task h2, #task h3 {
+      color: #9acd32;
+    }
 
-        input[type="text"] {
-            padding: 12px;
-            font-size: 18px;
-            width: 60%;
-            border-radius: 10px;
-            border: none;
-            margin-top: 15px;
-        }
+    input[type="text"] {
+      padding: 12px;
+      font-size: 18px;
+      width: 60%;
+      border-radius: 10px;
+      border: none;
+      margin-top: 15px;
+    }
 
-        button {
-            padding: 12px 24px;
-            font-size: 18px;
-            margin-top: 15px;
-            background-color: #ffd700;
-            color: #000;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      margin-top: 15px;
+      background-color: #ffd700;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-        button:hover {
-            background-color: #e6c200;
-        }
+    button:hover {
+      background-color: #e6c200;
+    }
 
-        #feedback {
-            color: #ff4d4d;
-            margin-top: 15px;
-            font-weight: bold;
-        }
+    #feedback {
+      color: #ff4d4d;
+      margin-top: 15px;
+      font-weight: bold;
+    }
 
-        #progress {
-            margin-top: 10px;
-            color: #00ffcc;
-            font-weight: bold;
-        }
+    #progress {
+      margin-top: 10px;
+      color: #00ffcc;
+      font-weight: bold;
+    }
 
-        #timer {
-            color: #87cefa;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+    #timer {
+      color: #87cefa;
+      font-weight: bold;
+      margin-top: 10px;
+    }
 
-        audio {
-            display: none;
-        }
-    </style>
+    #stats {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #ffa07a;
+    }
+
+    #medals {
+      margin-top: 10px;
+      font-size: 1.2em;
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <div id="overlay">
-        <h1>🔐 Escape-Breakout: Prozentrechnung</h1>
-        <div id="game">
-            <div id="task">
-                <h2>Reproduktionsaufgaben</h2>
-                <p>Wie viel sind 25 % von 200?</p>
-            </div>
-            <input type="text" id="password" placeholder="Antwort eingeben">
-            <br>
-            <button onclick="checkPassword()">🔓 Bestätigen</button>
-            <p id="feedback"></p>
-            <p id="progress"></p>
-            <p id="timer">⏱️ Zeit: 0 Sekunden</p>
-        </div>
+  <div id="overlay">
+    <h1>🔐 Escape-Breakout: Prozentrechnung</h1>
+    <div id="game">
+      <div id="task">
+        <h2>Reproduktionsaufgaben</h2>
+        <p>Wie viel sind 25 % von 200?</p>
+      </div>
+      <input type="text" id="password" placeholder="Antwort eingeben">
+      <br>
+      <button onclick="checkPassword()">🔓 Bestätigen</button>
+      <p id="feedback"></p>
+      <p id="progress"></p>
+      <p id="timer">⏱️ Zeit: 0 Sekunden</p>
+      <p id="stats">❌ Fehler: 0</p>
+      <p id="medals">🏅 Erfolge: –</p>
     </div>
+  </div>
 
-    <!-- Soundeffekte -->
-    <audio id="sound-correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b7bd4d8ce0.mp3?filename=correct-2-46134.mp3"></audio>
-    <audio id="sound-wrong" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_b2ac2d5637.mp3?filename=error-126627.mp3"></audio>
+  <!-- Soundeffekte -->
+  <audio id="sound-correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b7bd4d8ce0.mp3?filename=correct-2-46134.mp3"></audio>
+  <audio id="sound-wrong" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_b2ac2d5637.mp3?filename=error-126627.mp3"></audio>
+  <audio id="sound-victory" src="https://cdn.pixabay.com/download/audio/2022/10/15/audio_94d20470ba.mp3?filename=success-fanfare-trumpets-6185.mp3"></audio>
 
-    <script>
-        let currentLevel = 0;
-        let secondsElapsed = 0;
-        const correctSound = document.getElementById("sound-correct");
-        const wrongSound = document.getElementById("sound-wrong");
+  <script>
+    let currentLevel = 0;
+    let secondsElapsed = 0;
+    let errorCount = 0;
+    let streak = 0;
+    let medal = "-";
 
-        const passwords = ["50", "60", "480", "56", "642", "350", "25", "216", "945.39", "33"];
-        const tasks = [
-            "<h2>Reproduktionsaufgaben</h2><p>Wie viel sind 25 % von 200?</p>",
-            "<p>Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?</p>",
-            "<p>Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?</p>",
-            "<h3>🔐 Weiter zur direkten Anwendung.</h3><h2>Direkte Anwendung</h2><p>Ein Pullover kostet 80 €. Er ist um 30 % reduziert. Wie viel kostet der Pullover nach dem Rabatt?</p>",
-            "<p>Ein Laptop kostet 600 €. Der Preis steigt um 7 %. Wie hoch ist der neue Preis?</p>",
-            "<p>Ein Sofa kostet 500 €. Es gibt einen Rabatt von 30 %. Wie viel kostet es jetzt?</p>",
-            "<h3>📈 Vertiefung</h3><h2>Prozentuale Veränderung</h2><p>Ein Wert steigt von 120 auf 150. Um wie viel Prozent ist er gestiegen? (ganze Zahl ohne %)</p>",
-            "<p>Ein Produkt kostet 200 €. Es wird erst um 10 % reduziert und dann um 20 % erhöht. Was ist der Endpreis?</p>",
-            "<p>Ein Smartphone kostet 900 €. Nach einem Rabatt von 10 % wird die Mehrwertsteuer von 19 % hinzugefügt. Wie hoch ist der Endpreis (auf zwei Stellen)?</p>",
-            "<h3>🧠 Finale Herausforderung</h3><h2>Erhöhtes Niveau</h2><p>Eine Aktie steigt von 80 € auf 106 €. Um wie viel Prozent ist der Wert gestiegen? (ganze Zahl ohne %)</p>"
-        ];
+    const correctSound = document.getElementById("sound-correct");
+    const wrongSound = document.getElementById("sound-wrong");
+    const victorySound = document.getElementById("sound-victory");
 
-        function checkPassword() {
-            let input = document.getElementById("password").value.trim().replace("%", "");
-            const feedback = document.getElementById("feedback");
+    const passwords = ["50", "60", "480", "56", "642", "350", "25", "216", "945.39", "33"];
+    const tasks = [
+      "<h2>Reproduktionsaufgaben</h2><p>Wie viel sind 25 % von 200?</p>",
+      "<p>Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?</p>",
+      "<p>Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?</p>",
+      "<h3>🔐 Weiter zur direkten Anwendung.</h3><h2>Direkte Anwendung</h2><p>Ein Pullover kostet 80 €. Er ist um 30 % reduziert. Wie viel kostet der Pullover nach dem Rabatt?</p>",
+      "<p>Ein Laptop kostet 600 €. Der Preis steigt um 7 %. Wie hoch ist der neue Preis?</p>",
+      "<p>Ein Sofa kostet 500 €. Es gibt einen Rabatt von 30 %. Wie viel kostet es jetzt?</p>",
+      "<h3>📈 Vertiefung</h3><h2>Prozentuale Veränderung</h2><p>Ein Wert steigt von 120 auf 150. Um wie viel Prozent ist er gestiegen? (ganze Zahl ohne %)</p>",
+      "<p>Ein Produkt kostet 200 €. Es wird erst um 10 % reduziert und dann um 20 % erhöht. Was ist der Endpreis?</p>",
+      "<p>Ein Smartphone kostet 900 €. Nach einem Rabatt von 10 % wird die Mehrwertsteuer von 19 % hinzugefügt. Wie hoch ist der Endpreis (auf zwei Stellen)?</p>",
+      "<h3>🧠 Finale Herausforderung</h3><h2>Erhöhtes Niveau</h2><p>Eine Aktie steigt von 80 € auf 106 €. Um wie viel Prozent ist der Wert gestiegen? (ganze Zahl ohne %)</p>"
+    ];
 
-            if (input === passwords[currentLevel]) {
-                correctSound.play();
-                currentLevel++;
-                if (currentLevel < tasks.length) {
-                    document.getElementById("task").innerHTML = tasks[currentLevel];
-                    document.getElementById("password").value = "";
-                    feedback.innerText = "";
-                    updateProgress();
-                } else {
-                    const masterCode = "PZ-8421"; // Dein geheimer Code
-document.getElementById("game").innerHTML = `
-    <h2>🎉 Glückwunsch! Du hast alle Aufgaben gelöst!</h2>
-    <p>⏱️ Deine Zeit: ${secondsElapsed} Sekunden</p>
-    <p style="color:#9acd32; font-size: 1.5em; margin-top: 20px;">
-        🔑 Dein Schlüsselcode lautet: <strong>${masterCode}</strong>
-    </p>
-    <p>Trage ihn in dein Lösungsblatt ein oder zeige ihn deiner Lehrkraft.</p>
-`;
-                }
-            } else {
-                wrongSound.play();
-                feedback.innerText = "❌ Falsche Antwort! Versuche es erneut.";
-            }
+    function checkPassword() {
+      let input = document.getElementById("password").value.trim().replace("%", "");
+      const feedback = document.getElementById("feedback");
+
+      if (input === passwords[currentLevel]) {
+        correctSound.play();
+        currentLevel++;
+        streak++;
+        updateMedals();
+        if (currentLevel < tasks.length) {
+          document.getElementById("task").innerHTML = tasks[currentLevel];
+          document.getElementById("password").value = "";
+          feedback.innerText = "";
+          updateProgress();
+        } else {
+          victorySound.play();
+          const masterCode = "PZ-8421";
+          document.getElementById("game").innerHTML = `
+              <h2>🎉 Glückwunsch! Du hast alle Aufgaben gelöst!</h2>
+              <p>⏱️ Deine Zeit: ${secondsElapsed} Sekunden</p>
+              <p>❌ Fehler gemacht: ${errorCount}</p>
+              <p>🏅 Erreichte Medaille: <strong>${medal}</strong></p>
+              <p style="color:#9acd32; font-size: 1.5em; margin-top: 20px;">
+                  🔑 Dein Schlüsselcode lautet: <strong>${masterCode}</strong>
+              </p>
+              <p>Trage ihn in dein Lösungsblatt ein oder zeige ihn deiner Lehrkraft.</p>
+          `;
         }
+      } else {
+        wrongSound.play();
+        streak = 0;
+        errorCount++;
+        feedback.innerText = "❌ Falsche Antwort! Versuche es erneut.";
+        updateStats();
+        updateMedals();
+      }
+    }
 
-        function updateProgress() {
-            document.getElementById("progress").innerText = `🔐 Aufgabe ${currentLevel + 1} von ${tasks.length}`;
+    function updateProgress() {
+      document.getElementById("progress").innerText = `🔐 Aufgabe ${currentLevel + 1} von ${tasks.length}`;
+    }
+
+    function updateStats() {
+      document.getElementById("stats").innerText = `❌ Fehler: ${errorCount}`;
+    }
+
+    function updateMedals() {
+      const medalEl = document.getElementById("medals");
+      if (streak >= 10) {
+        medal = "🥇 Gold";
+      } else if (streak >= 5) {
+        medal = "🥈 Silber";
+      } else if (streak >= 3) {
+        medal = "🥉 Bronze";
+      } else {
+        medal = "–";
+      }
+      medalEl.innerText = `🏅 Erfolge: ${medal}`;
+    }
+
+    function startTimer() {
+      setInterval(() => {
+        secondsElapsed++;
+        document.getElementById("timer").innerText = `⏱️ Zeit: ${secondsElapsed} Sekunden`;
+      }, 1000);
+    }
+
+    window.onload = function () {
+      updateProgress();
+      updateStats();
+      updateMedals();
+      startTimer();
+      document.getElementById("password").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          checkPassword();
         }
-
-        function startTimer() {
-            setInterval(() => {
-                secondsElapsed++;
-                document.getElementById("timer").innerText = `⏱️ Zeit: ${secondsElapsed} Sekunden`;
-            }, 1000);
-        }
-
-        window.onload = function () {
-            updateProgress();
-            startTimer();
-            document.getElementById("password").addEventListener("keydown", function (event) {
-                if (event.key === "Enter") {
-                    checkPassword();
-                }
-            });
-        };
-    </script>
+      });
+    };
+  </script>
 </body>
 </html>

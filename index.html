@@ -70,6 +70,23 @@
       font-style: italic;
       display: none;
     }
+    #mc-choices {
+      display: none;
+      margin-top: 15px;
+    }
+    .mc-option {
+      background-color: #444;
+      color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 5px auto;
+      max-width: 300px;
+      cursor: pointer;
+    }
+    .mc-option:hover {
+      background-color: #666;
+    }
     audio { display: none; }
     #start-form input {
       display: block;
@@ -94,6 +111,7 @@
       <button onclick="toggleTooltip()">💡 Hinweis anzeigen</button>
       <p id="tooltip"></p>
       <input type="text" id="password" placeholder="Antwort eingeben">
+      <div id="mc-choices"></div>
       <br>
       <button onclick="checkPassword()">🔓 Bestätigen</button>
       <p id="feedback"></p>
@@ -103,15 +121,11 @@
       <p id="medals">🏅 Erfolge: –</p>
     </div>
   </div>
-
-  <!-- Sounds -->
   <audio id="sound-correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b7bd4d8ce0.mp3"></audio>
   <audio id="sound-wrong" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_b2ac2d5637.mp3"></audio>
   <audio id="sound-victory" src="https://cdn.pixabay.com/download/audio/2022/10/15/audio_94d20470ba.mp3"></audio>
-
   <script>
     const { jsPDF } = window.jspdf;
-
     let currentLevel = 0;
     let secondsElapsed = 0;
     let errorCount = 0;
@@ -148,6 +162,19 @@
       "Differenz: 26 → (26/80)×100"
     ];
 
+    const mcOptions = [
+      ["30", "40", "50", "60"],
+      ["60", "70", "80", "90"],
+      ["460", "480", "500", "520"],
+      ["54", "56", "58", "60"],
+      ["620", "640", "642", "660"],
+      ["320", "340", "350", "360"],
+      ["20", "25", "30", "35"],
+      ["206", "216", "226", "236"],
+      ["953.90", "963.90", "973.90", "983.90"],
+      ["30", "32", "33", "35"]
+    ];
+
     const correctSound = document.getElementById("sound-correct");
     const wrongSound = document.getElementById("sound-wrong");
     const victorySound = document.getElementById("sound-victory");
@@ -161,55 +188,55 @@
       }
       document.getElementById("start-form").style.display = "none";
       document.getElementById("game").style.display = "block";
-      updateProgress();
-      updateStats();
-      updateMedals();
-      startTimer();
-      updateTaskText();
+      updateProgress(); updateStats(); updateMedals(); startTimer(); updateTaskText();
     }
 
     function updateTaskText() {
       document.getElementById("taskText").innerText = tasks[currentLevel];
       document.getElementById("tooltip").style.display = "none";
+      document.getElementById("mc-choices").style.display = "none";
+      document.getElementById("mc-choices").innerHTML = "";
     }
 
     function toggleTooltip() {
       const tooltip = document.getElementById("tooltip");
-      if (tooltip.style.display === "none") {
-        tooltip.innerText = tooltips[currentLevel];
-        tooltip.style.display = "block";
-      } else {
-        tooltip.style.display = "none";
-      }
+      tooltip.innerText = tooltips[currentLevel];
+      tooltip.style.display = tooltip.style.display === "none" ? "block" : "none";
     }
 
     function checkPassword() {
-      let input = document.getElementById("password").value.trim().replace(/[^0-9.,]/g, "");
+      const input = document.getElementById("password").value.trim().replace(/[^0-9.,]/g, "");
       const feedback = document.getElementById("feedback");
-
       if (input === passwords[currentLevel]) {
-        correctSound.play();
-        currentLevel++;
-        streak++;
-        updateMedals();
+        correctSound.play(); currentLevel++; streak++; updateMedals();
         if (currentLevel < tasks.length) {
-          updateTaskText();
-          document.getElementById("password").value = "";
-          feedback.innerText = "";
-          updateProgress();
+          updateTaskText(); document.getElementById("password").value = "";
+          feedback.innerText = ""; updateProgress();
         } else {
-          clearInterval(timerInterval);
-          victorySound.play();
-          showCertificate();
+          clearInterval(timerInterval); victorySound.play(); showCertificate();
         }
       } else {
-        wrongSound.play();
-        streak = 0;
-        errorCount++;
-        feedback.innerText = "❌ Falsche Antwort! Versuch es nochmal!";
-        updateStats();
-        updateMedals();
+        wrongSound.play(); streak = 0; errorCount++;
+        feedback.innerText = "❌ Falsche Antwort! Versuch es nochmal oder wähle eine Option:";
+        updateStats(); updateMedals(); showMultipleChoice();
       }
+    }
+
+    function showMultipleChoice() {
+      const choices = mcOptions[currentLevel];
+      const container = document.getElementById("mc-choices");
+      container.innerHTML = "";
+      choices.forEach(option => {
+        const btn = document.createElement("div");
+        btn.className = "mc-option";
+        btn.innerText = option;
+        btn.onclick = () => {
+          document.getElementById("password").value = option;
+          checkPassword();
+        };
+        container.appendChild(btn);
+      });
+      container.style.display = "block";
     }
 
     function updateProgress() {
@@ -221,12 +248,8 @@
     }
 
     function updateMedals() {
-      const medalEl = document.getElementById("medals");
-      if (streak >= 10) medal = "🥇 Gold";
-      else if (streak >= 5) medal = "🥈 Silber";
-      else if (streak >= 3) medal = "🥉 Bronze";
-      else medal = "–";
-      medalEl.innerText = `🏅 Erfolge: ${medal}`;
+      medal = streak >= 10 ? "🥇 Gold" : streak >= 5 ? "🥈 Silber" : streak >= 3 ? "🥉 Bronze" : "–";
+      document.getElementById("medals").innerText = `🏅 Erfolge: ${medal}`;
     }
 
     function startTimer() {
@@ -250,21 +273,24 @@
 
     function generatePDF() {
       const doc = new jsPDF({ orientation: "landscape" });
+      doc.setDrawColor(0);
+      doc.setLineWidth(0.5);
       doc.setFontSize(18);
       doc.text("Escape-Breakout: Urkunde", 148, 30, { align: "center" });
       doc.setFontSize(12);
-      let lines = [
-        `Hiermit wird ${name} aus der Klasse ${klasse} ausgezeichnet,`,
-        `weil er/sie das Escape-Breakout zur Prozentrechnung erfolgreich abgeschlossen hat.`,
+      const boxY = 40;
+      doc.rect(40, boxY, 200, 80);
+      const lines = [
+        `Name: ${name}`,
+        `Klasse: ${klasse}`,
         `Bearbeitungszeit: ${secondsElapsed} Sekunden`,
-        `Anzahl der Fehler: ${errorCount}`,
+        `Fehleranzahl: ${errorCount}`,
         `Erreichte Medaille: ${medal}`,
-        `Schlüsselcode: PZ-8421`,
-        `Herzlichen Glückwunsch!`
+        `Geheimer Code: PZ-8421`,
+        `Herzlichen Glückwunsch zum erfolgreichen Abschluss!`
       ];
-      let startY = 50;
       lines.forEach((line, i) => {
-        doc.text(line, 148, startY + i * 12, { align: "center" });
+        doc.text(line, 140, boxY + 12 + i * 10, { align: "center" });
       });
       doc.save(`Urkunde_${name.replace(" ", "_")}.pdf`);
     }

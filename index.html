@@ -16,6 +16,7 @@
       color: #fff;
       text-align: center;
     }
+
     #overlay {
       background-color: rgba(0, 0, 0, 0.75);
       padding: 30px;
@@ -24,53 +25,261 @@
       max-width: 700px;
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
     }
-    h1 { color: #ffd700; font-size: 2.5em; margin-bottom: 20px; }
-    input[type="text"] {
-      padding: 12px; font-size: 18px; width: 60%;
-      border-radius: 10px; border: none; margin-top: 15px;
+
+    h1 {
+      color: #ffd700;
+      font-size: 2.5em;
+      margin-bottom: 20px;
     }
+
+    input[type="text"] {
+      padding: 12px;
+      font-size: 18px;
+      width: 60%;
+      border-radius: 10px;
+      border: none;
+      margin-top: 15px;
+    }
+
     button {
-      padding: 12px 24px; font-size: 18px; margin-top: 15px;
-      background-color: #ffd700; color: #000;
-      border: none; border-radius: 10px; cursor: pointer;
+      padding: 12px 24px;
+      font-size: 18px;
+      margin-top: 15px;
+      background-color: #ffd700;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
       transition: 0.3s;
     }
-    button:hover { background-color: #e6c200; }
-    #feedback { color: #ff4d4d; margin-top: 15px; font-weight: bold; }
-    #progress, #timer, #stats, #medals {
-      margin-top: 10px; font-weight: bold;
+
+    button:hover {
+      background-color: #e6c200;
     }
+
+    #feedback {
+      color: #ff4d4d;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    #progress, #timer, #stats, #medals {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
     #progress { color: #00ffcc; }
     #timer { color: #87cefa; }
     #stats { color: #ffa07a; }
     #medals { font-size: 1.2em; }
+
     #tooltip {
-      margin-top: 10px; color: #ccc; font-style: italic; display: none;
+      margin-top: 10px;
+      color: #ccc;
+      font-style: italic;
+      display: none;
     }
+
     audio { display: none; }
+
     #start-form input {
-      display: block; margin: 10px auto;
+      display: block;
+      margin: 10px auto;
     }
   </style>
 </head>
 <body>
-  <!-- ... (Rest bleibt unverändert) ... -->
+  <div id="overlay">
+    <h1>🔐 Escape-Breakout: Prozentrechnung</h1>
+
+    <div id="start-form">
+      <p>Bitte gib deinen Namen und deine Klasse ein, bevor du startest:</p>
+      <input type="text" id="userName" placeholder="Dein Name">
+      <input type="text" id="userClass" placeholder="Deine Klasse">
+      <button onclick="startGame()">🚀 Spiel starten</button>
+    </div>
+
+    <div id="game" style="display:none;">
+      <div id="task">
+        <h2>Reproduktionsaufgaben</h2>
+        <p id="taskText">Wie viel sind 25 % von 200?</p>
+      </div>
+      <button onclick="toggleTooltip()">💡 Hinweis anzeigen</button>
+      <p id="tooltip"></p>
+      <input type="text" id="password" placeholder="Antwort eingeben">
+      <br>
+      <button onclick="checkPassword()">🔓 Bestätigen</button>
+      <p id="feedback"></p>
+      <p id="progress"></p>
+      <p id="timer">⏱️ Zeit: 0 Sekunden</p>
+      <p id="stats">❌ Fehler: 0</p>
+      <p id="medals">🏅 Erfolge: –</p>
+    </div>
+  </div>
+
+  <!-- Sounds -->
+  <audio id="sound-correct" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_b7bd4d8ce0.mp3"></audio>
+  <audio id="sound-wrong" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_b2ac2d5637.mp3"></audio>
+  <audio id="sound-victory" src="https://cdn.pixabay.com/download/audio/2022/10/15/audio_94d20470ba.mp3"></audio>
+
   <script>
-    // ... (Variablen und Spiel-Logik unverändert) ...
+    const { jsPDF } = window.jspdf;
+
+    let currentLevel = 0;
+    let secondsElapsed = 0;
+    let errorCount = 0;
+    let streak = 0;
+    let medal = "-";
+    let timerInterval;
+    let name = "";
+    let klasse = "";
+
+    const passwords = ["50", "60", "480", "56", "642", "350", "25", "216", "963.90", "33"];
+    const tasks = [
+      "Wie viel sind 25 % von 200?",
+      "Ein Hemd kostet 120 €. Der Preis sinkt um 50 %. Wie viel kostet es jetzt?",
+      "Ein Fahrrad kostet 400 €. Der Preis steigt um 20 %. Wie hoch ist der neue Preis?",
+      "Ein Pullover kostet 80 €. Er ist um 30 % reduziert. Wie viel kostet er jetzt?",
+      "Ein Laptop kostet 600 €. Der Preis steigt um 7 %. Wie hoch ist der neue Preis?",
+      "Ein Sofa kostet 500 €. Es gibt 30 % Rabatt. Wie viel kostet es jetzt?",
+      "Ein Wert steigt von 120 auf 150. Um wie viel Prozent ist er gestiegen? (ganze Zahl ohne %)",
+      "Ein Produkt kostet 200 €. Erst 10 % Rabatt, dann 20 % Aufschlag. Was ist der Endpreis?",
+      "Ein Smartphone kostet 900 €. Nach 10 % Rabatt kommt 19 % MwSt. Wie hoch ist der Endpreis (zwei Stellen)?",
+      "Eine Aktie steigt von 80 € auf 106 €. Um wie viel Prozent ist der Wert gestiegen? (ganze Zahl ohne %)"
+    ];
+
+    const tooltips = [
+      "25 % von 200 = 0,25 × 200",
+      "50 % Rabatt = halber Preis",
+      "20 % von 400 = 80 → 400 + 80",
+      "30 % von 80 = 24 → 80 - 24",
+      "7 % von 600 = 42 → 600 + 42",
+      "30 % von 500 = 150 → 500 - 150",
+      "150 - 120 = 30 → (30/120)×100",
+      "Erst 10 % runter, dann 20 % rauf auf neuen Preis",
+      "900 - 10 % → dann ×1,19",
+      "Differenz: 26 → (26/80)×100"
+    ];
+
+    const correctSound = document.getElementById("sound-correct");
+    const wrongSound = document.getElementById("sound-wrong");
+    const victorySound = document.getElementById("sound-victory");
+
+    function startGame() {
+      name = document.getElementById("userName").value.trim();
+      klasse = document.getElementById("userClass").value.trim();
+      if (name === "" || klasse === "") {
+        alert("Bitte gib sowohl Name als auch Klasse ein!");
+        return;
+      }
+      document.getElementById("start-form").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      updateProgress();
+      updateStats();
+      updateMedals();
+      startTimer();
+      updateTaskText();
+    }
+
+    function updateTaskText() {
+      document.getElementById("taskText").innerText = tasks[currentLevel];
+      document.getElementById("tooltip").style.display = "none";
+    }
+
+    function toggleTooltip() {
+      const tooltip = document.getElementById("tooltip");
+      if (tooltip.style.display === "none") {
+        tooltip.innerText = tooltips[currentLevel];
+        tooltip.style.display = "block";
+      } else {
+        tooltip.style.display = "none";
+      }
+    }
+
+    function checkPassword() {
+      let input = document.getElementById("password").value.trim().replace("%", "");
+      const feedback = document.getElementById("feedback");
+
+      if (input === passwords[currentLevel]) {
+        correctSound.play();
+        currentLevel++;
+        streak++;
+        updateMedals();
+        if (currentLevel < tasks.length) {
+          updateTaskText();
+          document.getElementById("password").value = "";
+          feedback.innerText = "";
+          updateProgress();
+        } else {
+          clearInterval(timerInterval);
+          victorySound.play();
+          showCertificate();
+        }
+      } else {
+        wrongSound.play();
+        streak = 0;
+        errorCount++;
+        feedback.innerText = "❌ Falsche Antwort! Versuch es nochmal!";
+        updateStats();
+        updateMedals();
+      }
+    }
+
+    function updateProgress() {
+      document.getElementById("progress").innerText = `🔐 Aufgabe ${currentLevel + 1} von ${tasks.length}`;
+    }
+
+    function updateStats() {
+      document.getElementById("stats").innerText = `❌ Fehler: ${errorCount}`;
+    }
+
+    function updateMedals() {
+      const medalEl = document.getElementById("medals");
+      if (streak >= 10) medal = "🥇 Gold";
+      else if (streak >= 5) medal = "🥈 Silber";
+      else if (streak >= 3) medal = "🥉 Bronze";
+      else medal = "–";
+      medalEl.innerText = `🏅 Erfolge: ${medal}`;
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        document.getElementById("timer").innerText = `⏱️ Zeit: ${secondsElapsed} Sekunden`;
+      }, 1000);
+    }
+
+    function showCertificate() {
+      document.getElementById("game").innerHTML = `
+        <h2>🎉 Glückwunsch, ${name}!</h2>
+        <p>Du hast das Escape-Breakout erfolgreich beendet.</p>
+        <p>⏱️ Zeit: ${secondsElapsed} Sekunden</p>
+        <p>❌ Fehler: ${errorCount}</p>
+        <p>🏅 Medaille: <strong>${medal}</strong></p>
+        <p>📘 Klasse: ${klasse}</p>
+        <button onclick="generatePDF()">📄 Urkunde herunterladen</button>
+      `;
+    }
+
     function generatePDF() {
       const doc = new jsPDF();
-      doc.setFontSize(16);
-      doc.text("Escape-Breakout: Urkunde", 105, 30, { align: "center" });
+      doc.setFontSize(18);
+      doc.text("Escape-Breakout: Urkunde", 20, 30);
       doc.setFontSize(12);
-      doc.text(`Hiermit wird ${name} aus der Klasse ${klasse} ausgezeichnet,`, 105, 50, { align: "center" });
-      doc.text(`weil er/sie das Escape-Breakout zur Prozentrechnung erfolgreich abgeschlossen hat.`, 105, 60, { align: "center" });
-      doc.text(`Bearbeitungszeit: ${secondsElapsed} Sekunden`, 105, 80, { align: "center" });
-      doc.text(`Anzahl der Fehler: ${errorCount}`, 105, 90, { align: "center" });
-      doc.text(`Erreichte Medaille: ${medal}`, 105, 100, { align: "center" });
-      doc.text(`Geheimer Schlüsselcode: PZ-8421`, 105, 110, { align: "center" });
-      doc.text("Herzlichen Glückwunsch!", 105, 130, { align: "center" });
+      doc.text(`Name: ${name}`, 20, 50);
+      doc.text(`Klasse: ${klasse}`, 20, 60);
+      doc.text(`Zeit: ${secondsElapsed} Sekunden`, 20, 75);
+      doc.text(`Fehler: ${errorCount}`, 20, 85);
+      doc.text(`Medaille: ${medal}`, 20, 95);
+      doc.text(`Schlüsselcode: PZ-8421`, 20, 110);
       doc.save(`Urkunde_${name.replace(" ", "_")}.pdf`);
     }
+
+    window.onload = () => {
+      document.getElementById("password").addEventListener("keydown", function (event) {
+        if (event.key === "Enter") checkPassword();
+      });
+    };
   </script>
 </body>
 </html>
